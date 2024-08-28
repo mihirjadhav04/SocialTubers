@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'youtube_categories_list',
+    'youtube_apis',
 ]
 
 YOUTUBE_API_KEY = 'AIzaSyBkFWSAz7LkcusEsOTzkbzegWBy8bPIl4o'

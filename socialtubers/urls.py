@@ -20,4 +20,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('youtube-categories/', include("youtube_categories_list.urls")),
+    path('youtube/', include("youtube_apis.urls")),
 ]
