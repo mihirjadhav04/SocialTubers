@@ -75,10 +75,10 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        # Get the user's token
-        token = Token.objects.get(user=request.user)
-        # Delete the token to logout the user
-        token.delete()
+        # # Get the user's token
+        # token = Token.objects.get(user=request.user)
+        # # Delete the token to logout the user
+        # token.delete()
         
         return Response({
             "success": True,

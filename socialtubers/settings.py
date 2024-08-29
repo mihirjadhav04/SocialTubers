@@ -40,7 +40,6 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
-    'youtube_categories_list',
     'youtube_apis',
     'accounts',
 ]

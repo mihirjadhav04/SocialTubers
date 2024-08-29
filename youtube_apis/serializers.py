@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import YouTubeChannel, YouTubeVideo
+from .models import YouTubeChannel, YouTubeCategory
+
+class YouTubeCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = YouTubeCategory
+        fields = ['category_id', 'title']
+
 
 # class YouTubeVideoSerializer(serializers.ModelSerializer):
 #     class Meta:
