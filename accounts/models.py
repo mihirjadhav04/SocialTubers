@@ -81,7 +81,7 @@ class Influencer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     channel_name = models.CharField(max_length=100)
     youtube_id = models.CharField(max_length=100)
-    # instagram_id = models.CharField(max_length=100, null=True, blank=True)
+    instagram_id = models.CharField(max_length=100, null=True, blank=True)
     # category_type = models.CharField(max_length=100, choices=CATAGORIES)
     # short_description = models.CharField(max_length=255)
     # is_featured = models.BooleanField(default=False)

@@ -8,14 +8,12 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'name', 'email']
+        fields = ['id', 'name', 'email', 'password']
 
 class InfluencerSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-
     class Meta:
         model = Influencer
-        fields = '__all__'
+        fields = ['channel_name', 'youtube_id', 'instagram_id', 'created_date']
 
 # class BrandSerializer(serializers.ModelSerializer):
 #     user = UserSerializer()
