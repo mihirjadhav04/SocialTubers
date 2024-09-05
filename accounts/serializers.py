@@ -16,14 +16,6 @@ class InfluencerSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['user']
 
-
-# class BrandSerializer(serializers.ModelSerializer):
-#     user = UserSerializer()
-
-#     class Meta:
-#         model = Brand
-#         fields = '__all__'
-
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
