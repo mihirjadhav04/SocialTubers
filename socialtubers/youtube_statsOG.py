@@ -16,7 +16,7 @@ class YTstats:
         # print(url)
         json_url = requests.get(url)
         data = json.loads(json_url.text)
-        print(data)
+        print("CHANNEL DATA : ", data)
         try:
             data = data["items"][0]["statistics"]
         except:
@@ -38,6 +38,7 @@ class YTstats:
                 channel_videos[video_id].update(data)
 
         self.video_data = channel_videos
+        print("****** CHANNEL VIDEOS : ",channel_videos)
         return channel_videos
 
     def _get_single_video_data(self, video_id, part):

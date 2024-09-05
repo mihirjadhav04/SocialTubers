@@ -1,12 +1,77 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import YouTubeChannel, YouTubeCategory
+from .models import YouTubeChannel, YouTubeCategory, YouTubeVideo
 from .serializers import YouTubeChannelSerializer, YouTubeCategorySerializer
-from .youtube_stats import YTstats
+from socialtubers.youtube_stats import YTstats
 from django.conf import settings
 from googleapiclient.discovery import build
 from rest_framework.permissions import AllowAny
+
+
+class YouTubeChannelDetailsView(APIView):
+    authentication_classes = []  # Override any global authentication
+    permission_classes = [AllowAny]
+    def get(self, request, channel_id):
+        
+        try:
+            # Check if channel data is already in the database
+            channel = YouTubeChannel.objects.get(channel_id=channel_id)
+            serializer = YouTubeChannelSerializer(channel)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except YouTubeChannel.DoesNotExist:
+            pass  # Channel not found, so we fetch from YouTube API
+
+        # Fetch data from YouTube API
+        api_key = settings.YOUTUBE_API_KEY
+        yt = YTstats(api_key, channel_id)
+        
+        # Fetch channel statistics
+        channel_stats = yt.get_channel_statistics()
+        if not channel_stats:
+            return Response({"error": "Channel not found or API limit reached"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Save channel statistics in the database
+        channel = YouTubeChannel.objects.create(
+            channel_id=channel_id,
+            view_count=channel_stats.get('viewCount'),
+            subscriber_count=channel_stats.get('subscriberCount'),
+            video_count=channel_stats.get('videoCount')
+        )
+
+        print("CHANNEL STATS COMPLETED!")
+
+        # Fetch video data from YouTube API
+        video_data = yt.get_channel_video_data()
+        print(video_data)
+        print("LENGTH OF VIDEO DATA : ", len(video_data))
+        if not video_data:
+            return Response({"error": "No videos found or API limit reached"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Save videos to the database
+        for video_id, video_info in video_data.items():
+            print("VIDEO INFO : ", video_info)
+            YouTubeVideo.objects.create(
+                video_id=video_id,
+                channel=channel,
+                title=video_info.get('snippet').get('title'),
+                description=video_info.get('snippet').get('description'),
+                view_count=video_info.get('statistics').get('viewCount', 0),
+                like_count=video_info.get('statistics').get('likeCount', 0),
+                comment_count=video_info.get('statistics').get('commentCount', 0)
+            )
+
+        # Serialize the complete channel data including videos
+        serializer = YouTubeChannelSerializer(channel)
+        return Response({
+            "success": True,
+            "message": "Youtube data of the influencer fetched successfully!",
+            "status_code": status.HTTP_201_CREATED,
+            "data": {
+                    "channel-statistics": serializer.data
+                },
+        }, status=status.HTTP_201_CREATED)
+
 
 
 
@@ -18,7 +83,7 @@ class YouTubeCategoryListView(APIView):
         categories = YouTubeCategory.objects.all()
         authentication_classes = []  # Override any global authentication
         permission_classes = [AllowAny]
-        
+
         if categories.exists():
             print("DATA ACCESSED FROM DB.")
             serializer = YouTubeCategorySerializer(categories, many=True)
@@ -59,33 +124,36 @@ class YouTubeCategoryListView(APIView):
 
 
 class YouTubeChannelStatsView(APIView):
-    def get(self, request, channel_id):
-        # Check if data is already in the database
-        try:
-            channel = YouTubeChannel.objects.get(channel_id=channel_id)
-            serializer = YouTubeChannelSerializer(channel)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except YouTubeChannel.DoesNotExist:
-            pass  # Channel not found, so we fetch from YouTube API
+    pass
+#     def get(self, request, channel_id):
+#         # Check if data is already in the database
+#         try:
+#             channel = YouTubeChannel.objects.get(channel_id=channel_id)
+#             serializer = YouTubeChannelSerializer(channel)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         except YouTubeChannel.DoesNotExist:
+#             pass  # Channel not found, so we fetch from YouTube API
 
-        # Fetch data from YouTube API
-        api_key = settings.YOUTUBE_API_KEY
-        yt = YTstats(api_key, channel_id)
-        channel_stats = yt.get_channel_statistics()
+#         # Fetch data from YouTube API
+#         api_key = settings.YOUTUBE_API_KEY
+#         yt = YTstats(api_key, channel_id)
+#         channel_stats = yt.get_channel_statistics()
 
-        if not channel_stats:
-            return Response({"error": "Channel not found or API limit reached"}, status=status.HTTP_404_NOT_FOUND)
+#         if not channel_stats:
+#             return Response({"error": "Channel not found or API limit reached"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Save channel statistics in the database
-        channel = YouTubeChannel.objects.create(
-            channel_id=channel_id,
-            view_count=channel_stats.get('viewCount'),
-            subscriber_count=channel_stats.get('subscriberCount'),
-            video_count=channel_stats.get('videoCount')
-        )
+#         # Save channel statistics in the database
+#         channel = YouTubeChannel.objects.create(
+#             channel_id=channel_id,
+#             view_count=channel_stats.get('viewCount'),
+#             subscriber_count=channel_stats.get('subscriberCount'),
+#             video_count=channel_stats.get('videoCount')
+#         )
 
-        serializer = YouTubeChannelSerializer(channel)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         serializer = YouTubeChannelSerializer(channel)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
 
 # class YouTubeChannelVideosView(APIView):
 #     def get(self, request, channel_id):
@@ -121,6 +189,7 @@ class YouTubeChannelStatsView(APIView):
 #             channel = YouTubeChannel.objects.get(channel_id=channel_id)
 #             serializer = YouTubeChannelSerializer(channel)
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 # class FetchYouTubeChannelStatsView(APIView):
 #     def get(self, request, channel_id):

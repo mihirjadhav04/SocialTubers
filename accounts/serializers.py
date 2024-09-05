@@ -13,7 +13,9 @@ class UserSerializer(serializers.ModelSerializer):
 class InfluencerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Influencer
-        fields = ['channel_name', 'youtube_id', 'instagram_id', 'created_date']
+        fields = '__all__'
+        read_only_fields = ['user']
+
 
 # class BrandSerializer(serializers.ModelSerializer):
 #     user = UserSerializer()

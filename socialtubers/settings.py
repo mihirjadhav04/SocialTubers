@@ -54,7 +54,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-YOUTUBE_API_KEY = 'AIzaSyBkFWSAz7LkcusEsOTzkbzegWBy8bPIl4o'
+YOUTUBE_API_KEY = 'AIzaSyC1OY_6zx6LTVMnVTkW96G-z-0Q4il4hGI' #email : jadhavmihir143@gmail.com
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
