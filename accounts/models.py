@@ -64,14 +64,14 @@ class Influencer(models.Model):
     channel_name = models.CharField(max_length=100)
     youtube_id = models.CharField(max_length=100, unique=True)
     instagram_id = models.CharField(max_length=100, null=True, blank=True)
-    subscriber_count = models.CharField(max_length=50, null=True, blank=True)
-    view_count = models.CharField(max_length=50, null=True, blank=True)
-    video_count = models.CharField(max_length=50, null=True, blank=True)
-    top_video = models.CharField(max_length=100, null=True, blank=True)
-    average_views = models.IntegerField(null=True, blank=True)
-    average_likes = models.IntegerField(null=True, blank=True)
-    recent_three_videos = models.JSONField(null=True, blank=True)  # To store recent three video IDs
-    created_date = models.DateTimeField(default=datetime.now, blank=True)
+    # subscriber_count = models.CharField(max_length=50, null=True, blank=True)
+    # view_count = models.CharField(max_length=50, null=True, blank=True)
+    # video_count = models.CharField(max_length=50, null=True, blank=True)
+    # top_video = models.CharField(max_length=100, null=True, blank=True)
+    # average_views = models.IntegerField(null=True, blank=True)
+    # average_likes = models.IntegerField(null=True, blank=True)
+    # recent_three_videos = models.JSONField(null=True, blank=True)  # To store recent three video IDs
+    # created_date = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
         return self.channel_name

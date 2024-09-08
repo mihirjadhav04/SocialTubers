@@ -89,10 +89,21 @@ WSGI_APPLICATION = 'socialtubers.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'socialtubers_db',   # Your PostgreSQL database name
+        'USER': 'postgres',   # Your PostgreSQL username
+        'PASSWORD': 'simba@143',    # Your PostgreSQL password
+        'HOST': 'localhost',            # Set to the correct host (if remote, use IP address or domain)
+        'PORT': '5432',                 # Default PostgreSQL port
     }
 }
 
